@@ -28,11 +28,92 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+    post:
+          summary: Add a book
+          operationId: addBooks
+          tags:
+          - books
+          responses:
+            '201':
+              description: Add a book
+              content:
+                application/json:    
+                  schema:
+                    $ref: "#/components/schemas/ResponseBooks"
+            default:
+              description: unexpected error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error"
+  /books/{bookId}:
+    get:
+          summary: Info on specific book
+          operationId: listBook
+          tags:
+          - books
+          responses:
+            '200':
+              description: Show one book
+              content:
+                application/json:    
+                  schema:
+                    $ref: "#/components/schemas/ResponseBooks"
+            default:
+              description: unexpected error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error"
+    delete:
+          summary: Delete specific book
+          operationId: deleteBook
+          tags:
+          - books
+          responses:
+            '200':
+              description: Delete one book
+              content:
+                application/json:    
+                  schema:
+                    $ref: "#/components/schemas/ResponseBooks"
+            default:
+              description: unexpected error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error"
+                      patch:
+          summary: Updating specific book
+          operationId: updateBook
+          tags:
+          - books
+          responses:
+            '200':
+              description: Update one book
+              content:
+                application/json:    
+                  schema:
+                    $ref: "#/components/schemas/ResponseBooks"
+            default:
+              description: unexpected error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error"
 components:
   schemas:
     Book: # A single book
       type: object
+      required:
+        - id
+        - name
       properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
 # Add properties for your books here   
     ResponseBook: #Single book response including _id and __v
       allOf:
