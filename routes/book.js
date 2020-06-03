@@ -26,16 +26,29 @@ post = (req, res, next) => {
 patch = (req, res, next) => {
   console.log(dotify(req.body))
   req.models.Book.findByIdAndUpdate(req.params.id,
-  { 
-    $set: dotify(req.body)
-  },
-  {
-    returnNewDocument: true,
-    new: true,
-  }).then((book) => {
-    res.send(book)
-  }).catch((error) => next(error))
+    {
+      $set: dotify(req.body)
+    },
+    {
+      returnNewDocument: true,
+      new: true,
+      upsert: true,
+      runvalidators: true,
+    }).then((status) => {
+      console.log("status: ", status)
+      if (status.upserted) {
+        res.status(201)
+      } else if (status.nModified) {
+        res.status(200)
+      } else {
+        res.status(204)
+      }
+      req.models.Book.findById(req.params.id).then((book) => {
+        res.send(book)
+      })
+    }).catch((error) => next(error))
 }
+
 
 deleteBook = (req, res, next) => {
   req.models.Book.findByIdAndDelete(req.params.id).then((deleted)=> {
@@ -45,9 +58,16 @@ deleteBook = (req, res, next) => {
   }).catch((error) => next(error))
 }
 
+getById = (req, res, next) => {
+  req.models.Book.findById(req.params.id).then((book) => {
+    return res.send(book);
+  }).catch((error) => next(error))
+}
+
 module.exports = {
   get,
   post,
   deleteBook,
   patch,
+  getById,
 }
